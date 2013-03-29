@@ -33,17 +33,13 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
+        var result = document.querySelector('#result'),
+            socket = new WebSocket('ws://websocket.mtgox.com:80/mtgox?Channel=ticker'),
+            json;
+    
+        socket.onmessage = function(event) {
+            json = JSON.parse(event.data);
+            result.innerText = json.ticker.last.display;
+        };
     }
 };
